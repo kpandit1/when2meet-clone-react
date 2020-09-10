@@ -1,6 +1,10 @@
 @import '~antd/dist/antd.css';
 .App {
+  /* text-align: center; */
+}
+.create-event {
   text-align: center;
+  padding: 30px;
 }
 
 /*

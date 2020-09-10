@@ -1,0 +1,1 @@
+- Delete meetings from db after end date (use cloud functions)

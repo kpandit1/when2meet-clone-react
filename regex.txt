@@ -1,0 +1,4 @@
+find
+<Option value=".*"> ?\(GMT([-+])(\d{2}):(\d{2})\) (.*)</Option>$
+replace
+<Option value="$4"> ({moment.utc().add($1 ($2*60 + $3), 'minutes').format('hh:mm a')}) $4</Option>

@@ -1,4 +1,13 @@
-import { Button, DatePicker, Form, Input, Select, TimePicker } from "antd";
+import {
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  Select,
+  TimePicker,
+  Card,
+  Divider,
+} from "antd";
 import firebase from "firebase/app";
 import "firebase/database";
 import moment from "moment-timezone";
@@ -17,7 +26,7 @@ function CreateEvent({ history }) {
     wrapperCol: { span: 8 },
   };
   const tailLayout = {
-    wrapperCol: { offset: 8, span: 16 },
+    wrapperCol: { offset: 8, span: 8 },
   };
 
   const onFinish = (fieldValues) => {
@@ -30,8 +39,9 @@ function CreateEvent({ history }) {
       ],
       startTime: fieldValues["startTime"].format("HH:mm:ss"),
       endTime: fieldValues["endTime"].format("HH:mm:ss"),
-      timezone: fieldValues["timezone"].split(" ")[2],
       // Timezone is formatted as (05:43 pm) <Timezone>
+      // Split: ["(05:43", "pm)", "<Timezone>"]
+      timezone: fieldValues["timezone"].split(" ")[2],
     };
     console.log("Submitted:", values);
     const meetingKey = firebase.database().ref().push().key;
@@ -51,80 +61,72 @@ function CreateEvent({ history }) {
 
   return (
     <div className="create-event">
-      <h1>Create New Event</h1>
-      <Form
-        {...layout}
-        name="basic"
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        initialValues={{
-          startTime: moment(defaultStartTime, "HH:mm:ss"),
-          endTime: moment(defaultEndTime, "HH:mm:ss"),
-          timezone:
-            "(" +
-            moment().tz(moment.tz.guess()).format("hh:mm a") +
-            ") " +
-            moment.tz.guess(),
-        }}
-      >
-        <Form.Item
-          label="Event Name"
-          name="eventName"
-          rules={[{ required: true, message: "Please input an event name" }]}
+        <h1>Create New Event</h1>
+        <Divider></Divider>
+        <Form
+          {...layout}
+          name=""
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          initialValues={{
+            startTime: moment(defaultStartTime, "HH:mm:ss"),
+            endTime: moment(defaultEndTime, "HH:mm:ss"),
+            timezone:
+              "(" +
+              moment().tz(moment.tz.guess()).format("hh:mm a") +
+              ") " +
+              moment.tz.guess(),
+          }}
         >
-          <Input />
-        </Form.Item>
-
-        <h2>What dates might work?</h2>
-
-        <Form.Item
-          label="Dates"
-          name="dates"
-          rules={[
-            { required: true, message: "Please input a valid date range" },
-          ]}
-        >
-          <RangePicker format="ddd MMM D" />
-        </Form.Item>
-
-        <h2>What times might work?</h2>
-        <Form.Item label="No earlier than" name="startTime">
-          <TimePicker
-            use12Hours
-            format="h:mm A"
-            minuteStep={15}
-          />
-        </Form.Item>
-
-        <Form.Item label="No later than" name="endTime">
-          <TimePicker
-            use12Hours
-            format="h:mm A"
-            minuteStep={15}
-          />
-        </Form.Item>
-
-        <Form.Item name="timezone" label="Timezone">
-          <Select
-            showSearch
+          <Form.Item
+            label="Event Name"
+            name="eventName"
+            rules={[{ required: true, message: "Please input an event name" }]}
           >
-            {moment.tz.names().map((choice) => (
-              <Option
-                key={choice}
-                value={choice + " " + moment().tz(choice).format("hh:mm a")}
-              >
-                ({moment().tz(choice).format("hh:mm a")}) {choice}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
+            <Input />
+          </Form.Item>
+          <br/>
+          <h2>What dates might work?</h2>
 
-        <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit">
-            Create Event
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item
+            label="Dates"
+            name="dates"
+            rules={[
+              { required: true, message: "Please input a valid date range" },
+            ]}
+          >
+            <RangePicker format="ddd MMM D" />
+          </Form.Item>
+
+          <br/>
+          <h2>What times might work?</h2>
+          <Form.Item label="No earlier than" name="startTime">
+            <TimePicker use12Hours format="h:mm A" minuteStep={15} />
+          </Form.Item>
+
+          <Form.Item label="No later than" name="endTime">
+            <TimePicker use12Hours format="h:mm A" minuteStep={15} />
+          </Form.Item>
+
+          <Form.Item name="timezone" label="Timezone">
+            <Select showSearch>
+              {moment.tz.names().map((choice) => (
+                <Option
+                  key={choice}
+                  value={choice + " " + moment().tz(choice).format("hh:mm a")}
+                >
+                  ({moment().tz(choice).format("hh:mm a")}) {choice}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item {...tailLayout}>
+            <Button block type="primary" htmlType="submit">
+              Create Event
+            </Button>
+          </Form.Item>
+        </Form>
     </div>
   );
 }

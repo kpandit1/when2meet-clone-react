@@ -1,35 +1,39 @@
 import React, { Component } from "react";
-import {Spin} from 'antd'
+import { Spin, Skeleton, Typography, Divider } from "antd";
 import { Redirect, withRouter } from "react-router-dom";
+import ScheduleSelector from "react-schedule-selector";
+
+const { Paragraph } = Typography;
 
 class Meeting extends Component {
   constructor(props) {
     super(props);
     this.state = {
       id: props.match.params.id,
+      // If meeting ID is incorrect or expired, redirect
       redirect: false,
       loaded: false,
     };
   }
 
   componentDidMount() {
-    fetch(`https://when2meet-clone.firebaseio.com/${this.state.id}.json`, { credentials: "same-origin" })
+    fetch(`https://when2meet-clone.firebaseio.com/${this.state.id}.json`, {
+      credentials: "same-origin",
+    })
       .then((response) => {
         if (!response.ok) throw Error(response.statusText);
         return response.json();
       })
       .then((data) => {
+        // Incorrect meeting id
         if (!data) {
-          //this.props.history.push('/');
           this.setState({
-            redirect: true
-          })
+            redirect: true,
+          });
         } else {
-          this.setState((prevState) => {
-            return {
-              ...data,
-              loaded: true,
-            };
+          this.setState({
+            ...data,
+            loaded: true,
           });
           console.log(this.state);
         }
@@ -40,16 +44,24 @@ class Meeting extends Component {
   render() {
     if (this.state.redirect) {
       return <Redirect to="/" />;
-    }
-    else if (!this.state.loaded) {
-      return <Spin size="large"/>
+    } else if (!this.state.loaded) {
+      return (
+        <div>
+          <Spin size="large" />
+          <Skeleton active />
+        </div>
+      );
     }
 
     return (
       <div>
         <h1>Meeting ID {this.state.id} </h1>
+        <Paragraph copyable={{ text: window.location.href }}>
+          Copy Meeting Link
+        </Paragraph>
+        <Divider />
       </div>
     );
   }
 }
-export default withRouter(Meeting)
+export default withRouter(Meeting);
