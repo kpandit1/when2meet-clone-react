@@ -1,0 +1,27 @@
+.selected {
+    background: rgb(142, 225, 142);
+}
+
+.hover {
+    background: rgb(194, 242, 194);
+}
+
+/*This prevents text selection inside the table*/
+.table-body{
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;    
+  cursor: cell;
+}
+
+.table td {
+    margin: 12px 12px 12px 12px;
+    padding: 12px 12px 12px 12px;
+}
+.table {
+  border-collapse: separate;
+  border-spacing: 5px;
+  *border-collapse: expression('separate', cellSpacing = '5px');
+}

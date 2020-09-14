@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Spin, Skeleton, Typography, Divider } from "antd";
 import { Redirect, withRouter } from "react-router-dom";
-import ScheduleSelector from "react-schedule-selector";
+//import ScheduleSelector from "react-schedule-selector";
+import ScheduleSelector from "./ScheduleSelector";
 
 const { Paragraph } = Typography;
 
@@ -13,8 +14,14 @@ class Meeting extends Component {
       // If meeting ID is incorrect or expired, redirect
       redirect: false,
       loaded: false,
+      schedule: [],
     };
   }
+
+  handleChange = (newSchedule) => {
+    console.log(newSchedule);
+    this.setState({ schedule: newSchedule });
+  };
 
   componentDidMount() {
     fetch(`https://when2meet-clone.firebaseio.com/${this.state.id}.json`, {
@@ -52,7 +59,7 @@ class Meeting extends Component {
         </div>
       );
     }
-
+    // The actual meat goes here
     return (
       <div>
         <h1>Meeting ID {this.state.id} </h1>
@@ -60,6 +67,16 @@ class Meeting extends Component {
           Copy Meeting Link
         </Paragraph>
         <Divider />
+        <div style={{ padding: "40px" }}>
+          <ScheduleSelector
+            selection={this.state.schedule}
+            numDays={3}
+            minTime={9}
+            maxTime={15}
+            hourlyChunks={4}
+            onChange={this.handleChange}
+          />
+        </div>
       </div>
     );
   }
